@@ -93,7 +93,7 @@ export function CtaSection({
           <div data-reveal="scale" style={delay(200)} className="lg:col-span-6 lg:pl-8 xl:col-span-5 xl:col-start-8 xl:pl-0">
             <div className="rounded-[2rem] bg-milk p-6 text-ink shadow-lift sm:p-9">
               <h3 className="text-[1.5rem] font-medium tracking-[-0.03em]">Оставьте заявку</h3>
-              <p className="mb-6 mt-1.5 text-[0.93rem] text-moss">Администратор свяжется с вами и подтвердит время.</p>
+              <p className="mb-6 mt-1.5 text-[0.93rem] text-moss">Заявка сразу откроется в WhatsApp — администратор подтвердит время.</p>
               <BookingForm groups={bookingOptions()} defaultService={service} />
             </div>
           </div>

@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { Check, LoaderCircle, PhoneCall } from "lucide-react";
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
+import { Check, PhoneCall } from "lucide-react";
 import { buttonClass } from "@/components/Button";
 import { WhatsAppIcon } from "@/components/icons";
-import { bookingMessage, formatPhone, parseBooking, timeSlots, type BookingResponse } from "@/lib/booking";
+import { bookingMessage, formatPhone, parseBooking, timeSlots } from "@/lib/booking";
 import { basePath, site, waLink } from "@/lib/site";
 import { cn } from "@/lib/cn";
 
@@ -18,16 +18,9 @@ type Props = {
   /** оформление: на светлой карточке или на тёмной секции */
   tone?: "light" | "dark";
   compact?: boolean;
-  /** дополнительный блок под формой — скрывается после отправки */
-  footer?: ReactNode;
 };
 
-type Status =
-  | { state: "idle" }
-  | { state: "sending" }
-  | { state: "sent" }
-  | { state: "whatsapp"; link: string }
-  | { state: "error"; message: string };
+type Status = { state: "idle" } | { state: "whatsapp"; link: string };
 
 const todayIso = () => {
   const d = new Date();
@@ -35,7 +28,33 @@ const todayIso = () => {
   return d.toISOString().slice(0, 10);
 };
 
-export function BookingForm({ groups, defaultService = "", tone = "light", compact = false, footer }: Props) {
+const DAYS_AHEAD = 30;
+const noopSubscribe = () => () => {};
+const capitalize = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+
+/** Ближайшие дни для выбора желаемой даты: «Сегодня, 2 октября», «Завтра…», «Сб, 4 октября» — без года */
+function upcomingDays(today: string) {
+  const [y, m, d] = today.split("-").map(Number);
+  const dayMonth = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" });
+  const withWeekday = new Intl.DateTimeFormat("ru-RU", {
+    weekday: "short",
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  });
+  return Array.from({ length: DAYS_AHEAD }, (_, i) => {
+    const date = new Date(Date.UTC(y, m - 1, d + i));
+    const label =
+      i === 0
+        ? `Сегодня, ${dayMonth.format(date)}`
+        : i === 1
+          ? `Завтра, ${dayMonth.format(date)}`
+          : capitalize(withWeekday.format(date));
+    return { value: date.toISOString().slice(0, 10), label };
+  });
+}
+
+export function BookingForm({ groups, defaultService = "", tone = "light", compact = false }: Props) {
   const uid = useId();
   const pathname = usePathname();
   const openedAt = useRef(0);
@@ -43,18 +62,18 @@ export function BookingForm({ groups, defaultService = "", tone = "light", compa
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [phone, setPhone] = useState("");
   const [service, setService] = useState(defaultService);
-  const dateRef = useRef<HTMLInputElement>(null);
+  // «Сегодня» берётся из браузера посетителя: страницы собираются заранее, и дата сборки устарела бы
+  const today = useSyncExternalStore(noopSubscribe, todayIso, () => null);
+  const days = useMemo(() => (today ? upcomingDays(today) : []), [today]);
 
   useEffect(() => {
     openedAt.current = Date.now();
-    // минимальная дата — сегодня по времени посетителя (страницы собираются заранее)
-    if (dateRef.current) dateRef.current.min = todayIso();
   }, []);
 
   const known = useMemo(() => groups.some((g) => g.options.includes(service)), [groups, service]);
   const dark = tone === "dark";
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const payload = {
@@ -73,38 +92,34 @@ export function BookingForm({ groups, defaultService = "", tone = "light", compa
     const parsed = parseBooking(payload);
     if (!parsed.ok) {
       setErrors(parsed.fields);
-      setStatus({ state: "idle" });
       const first = Object.keys(parsed.fields)[0];
       e.currentTarget.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       return;
     }
 
     setErrors({});
-    setStatus({ state: "sending" });
     const link = waLink(bookingMessage(parsed.data));
 
-    try {
-      const res = await fetch(`${basePath}/api/booking`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = (await res.json()) as BookingResponse;
-      if (data.ok) {
-        setStatus(data.delivery === "sent" ? { state: "sent" } : { state: "whatsapp", link });
-      } else {
-        if (data.fields) setErrors(data.fields);
-        setStatus({ state: "error", message: data.error });
-      }
-    } catch {
-      // Нет связи с сервером — заявку всё равно можно отправить через WhatsApp
-      setStatus({ state: "whatsapp", link });
-    }
+    // WhatsApp открывается сразу, в момент нажатия: если сначала ждать ответа сервера,
+    // браузер посчитает новое окно всплывающим и заблокирует его.
+    const win = window.open(link, "_blank");
+    if (win) win.opener = null;
+    else window.location.href = link;
+
+    // Параллельно заявка уходит на сервер: если настроен Telegram или веб-хук,
+    // администраторы получат её, даже если посетитель не отправит сообщение в WhatsApp.
+    void fetch(`${basePath}/api/booking`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch(() => {});
+
+    setStatus({ state: "whatsapp", link });
   }
 
-  /* ── Экран результата ── */
-  if (status.state === "sent" || status.state === "whatsapp") {
-    const viaWa = status.state === "whatsapp";
+  /* ── Экран после перехода в WhatsApp ── */
+  if (status.state === "whatsapp") {
     return (
       <div className="flex flex-col items-start gap-5 py-2" role="status" aria-live="polite">
         <span
@@ -115,34 +130,22 @@ export function BookingForm({ groups, defaultService = "", tone = "light", compa
         >
           <Check className="size-6" strokeWidth={2.2} aria-hidden="true" />
         </span>
-        {viaWa ? (
-          <>
-            <div>
-              <h3 className="text-h3">Остался один шаг</h3>
-              <p className={cn("mt-2 max-w-md", dark ? "text-white/75" : "text-moss")}>
-                Данные проверены. Отправьте готовое сообщение в WhatsApp клиники — администратор ответит и
-                подтвердит дату и время приёма.
-              </p>
-            </div>
-            <a
-              href={status.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={buttonClass({ variant: "whatsapp", size: "lg", className: "w-full sm:w-auto" })}
-            >
-              <WhatsAppIcon className="size-5" />
-              Отправить в WhatsApp
-            </a>
-          </>
-        ) : (
-          <div>
-            <h3 className="text-h3">Заявка отправлена</h3>
-            <p className={cn("mt-2 max-w-md", dark ? "text-white/75" : "text-moss")}>
-              Администратор свяжется с вами, чтобы подтвердить дату и время приёма. Заявка не является
-              подтверждённой записью до звонка или сообщения от клиники.
-            </p>
-          </div>
-        )}
+        <div>
+          <h3 className="text-h3">Открыли WhatsApp</h3>
+          <p className={cn("mt-2 max-w-md", dark ? "text-white/75" : "text-moss")}>
+            Сообщение с вашей заявкой уже набрано — отправьте его, и администратор подтвердит дату и время
+            приёма.
+          </p>
+        </div>
+        <a
+          href={status.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonClass({ variant: "whatsapp", size: "lg", className: "w-full sm:w-auto" })}
+        >
+          <WhatsAppIcon className="size-5" />
+          WhatsApp не открылся? Нажмите сюда
+        </a>
         <p className={cn("text-sm", dark ? "text-white/60" : "text-moss")}>
           Срочный вопрос? Позвоните:{" "}
           <a href={site.phone.href} className="link-line font-medium text-current">
@@ -179,10 +182,8 @@ export function BookingForm({ groups, defaultService = "", tone = "light", compa
     dark ? "text-white/65" : "text-moss",
   );
   const errCls = cn("mt-1.5 text-xs", dark ? "text-peach" : "text-[#b3402e]");
-  const sending = status.state === "sending";
 
   return (
-    <>
     <form onSubmit={onSubmit} noValidate className="grid gap-3.5" aria-describedby={`${uid}-note`}>
       <div className={cn("grid gap-3.5", !compact && "sm:grid-cols-2")}>
         <div>
@@ -277,17 +278,33 @@ export function BookingForm({ groups, defaultService = "", tone = "light", compa
       <div className="grid grid-cols-2 gap-3.5">
         <div>
           <div className="relative">
-            <input
+            <select
               id={`${uid}-date`}
               name="date"
-              type="date"
-              ref={dateRef}
+              defaultValue=""
               aria-invalid={!!errors.date}
-              className={cn(field, "pt-4", dark && "[color-scheme:dark]")}
-            />
+              className={cn(field, "appearance-none truncate pt-4 pr-9", dark && "[&>*]:text-ink")}
+            >
+              <option value="">Любая</option>
+              {days.map((d) => (
+                <option key={d.value} value={d.value}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
             <label htmlFor={`${uid}-date`} className={staticLabel}>
               Желаемая дата
             </label>
+          <svg
+            className={cn("pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2", dark ? "text-white/70" : "text-moss")}
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            aria-hidden="true"
+          >
+            <path d="m4 6 4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
           </div>
           {errors.date && <p className={errCls}>{errors.date}</p>}
         </div>
@@ -398,26 +415,12 @@ export function BookingForm({ groups, defaultService = "", tone = "light", compa
         {errors.consent && <p className={errCls}>{errors.consent}</p>}
       </div>
 
-      {status.state === "error" && (
-        <p role="alert" className={cn("rounded-xl px-4 py-3 text-sm", dark ? "bg-white/10 text-peach" : "bg-peach-soft text-[#8f3423]")}>
-          {status.message}
-        </p>
-      )}
-
       <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-center">
         <button
           type="submit"
-          disabled={sending}
           className={buttonClass({ variant: dark ? "sun" : "primary", size: "lg", className: "w-full sm:w-auto" })}
         >
-          {sending ? (
-            <>
-              <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
-              Отправляем…
-            </>
-          ) : (
-            "Записаться на приём"
-          )}
+          Записаться на приём
         </button>
         <a
           href={site.phone.href}
@@ -429,11 +432,9 @@ export function BookingForm({ groups, defaultService = "", tone = "light", compa
       </div>
 
       <p id={`${uid}-note`} className={cn("text-xs leading-relaxed", dark ? "text-white/55" : "text-moss")}>
-        Заявка не является подтверждением записи: дату и время согласует администратор. График работы —{" "}
-        {site.hours.label.toLowerCase()}.
+        После нажатия откроется WhatsApp с готовым сообщением — останется его отправить. Дату и время
+        подтвердит администратор. График работы — {site.hours.label.toLowerCase()}.
       </p>
     </form>
-    {footer}
-    </>
   );
 }

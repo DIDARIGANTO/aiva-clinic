@@ -12,8 +12,7 @@ import {
 } from "react";
 import { X } from "lucide-react";
 import { Emblem } from "@/components/Logo";
-import { WhatsAppIcon } from "@/components/icons";
-import { site, waLink } from "@/lib/site";
+import { site } from "@/lib/site";
 import { BookingForm, type ServiceGroup } from "./BookingForm";
 
 type Ctx = { open: (service?: string) => void };
@@ -68,7 +67,7 @@ export function BookingProvider({ groups, children }: { groups: ServiceGroup[]; 
             <Emblem className="pointer-events-none absolute -right-10 -top-12 size-52 text-white/8" />
             <p className="eyebrow text-sun">Запись на приём</p>
             <h2 id="booking-title" className="mt-3 text-[1.7rem] font-medium leading-[1.08] tracking-[-0.03em] sm:text-[2.1rem]">
-              Оставьте заявку — <span className="accent text-white">мы перезвоним</span>
+              Оставьте заявку — <span className="accent text-white">подберём время</span>
             </h2>
             <p className="mt-2.5 max-w-md text-sm text-white/70">
               {site.hours.label}, {site.hours.note}. Поможем выбрать специалиста и удобное время.
@@ -83,31 +82,7 @@ export function BookingProvider({ groups, children }: { groups: ServiceGroup[]; 
             </button>
           </div>
           <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-6 sm:px-9 sm:py-8">
-            <BookingForm
-              key={instance}
-              groups={groups}
-              defaultService={service}
-              footer={
-                <a
-                  href={waLink(
-                    service
-                      ? `Здравствуйте! Хочу записаться в AIVA CLINIC. Интересует: ${service}.`
-                      : undefined,
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 flex items-center gap-3 rounded-2xl border border-line bg-white px-4 py-3.5 text-sm transition-colors hover:border-forest/40"
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-leaf/20 text-forest">
-                    <WhatsAppIcon className="size-5" />
-                  </span>
-                  <span>
-                    <span className="block font-medium text-ink">Быстрее в WhatsApp</span>
-                    <span className="text-moss">{site.whatsapp.display} — напишите, и мы подберём время</span>
-                  </span>
-                </a>
-              }
-            />
+            <BookingForm key={instance} groups={groups} defaultService={service} />
           </div>
         </div>
       </dialog>

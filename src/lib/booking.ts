@@ -112,10 +112,16 @@ export function parseBooking(raw: unknown): BookingResult {
   };
 }
 
+const MONTHS = [
+  "января", "февраля", "марта", "апреля", "мая", "июня",
+  "июля", "августа", "сентября", "октября", "ноября", "декабря",
+];
+
+/** «2026-10-04» → «4 октября» (год в заявке не нужен: выбираются только ближайшие дни) */
 export function formatDateRu(iso: string) {
   if (!iso) return "";
-  const [y, m, d] = iso.split("-");
-  return `${d}.${m}.${y}`;
+  const [, m, d] = iso.split("-").map(Number);
+  return `${d} ${MONTHS[m - 1] ?? ""}`.trim();
 }
 
 /** Текст заявки — для WhatsApp и уведомления администраторам */
