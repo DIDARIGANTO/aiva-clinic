@@ -66,3 +66,12 @@ export const serviceIcons: Record<IconName, LucideIcon> = {
   activity: Activity,
   flask: FlaskConical,
 };
+
+/** Зелёная стрелка-буллит из референса */
+export function Arrow({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 16" className={`h-4 w-10 shrink-0 text-forest ${className}`} fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M2 8h34M30 2l6 6-6 6" />
+    </svg>
+  );
+}

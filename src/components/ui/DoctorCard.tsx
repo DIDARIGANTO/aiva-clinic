@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Arrow } from "@/components/home/Reasons";
+import { Arrow } from "@/components/icons";
 import type { Doctor } from "@/data/doctors";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/cn";

@@ -9,6 +9,7 @@ import { site, waLink } from "@/lib/site";
 
 /** Блок записи по референсу: серая панель, заголовок, две кнопки связи и кнопка «Записаться», фото справа */
 export function CtaSection({
+  label,
   title = "Запишитесь на консультацию к нашим врачам",
   lead = "Если не знаете, к какому врачу обратиться, — поможем выбрать специалиста и удобное время.",
   service,
@@ -18,6 +19,7 @@ export function CtaSection({
   imageAlt = "Врач AIVA CLINIC",
   id = "zapis",
 }: {
+  label?: string;
   title?: ReactNode;
   lead?: string;
   service?: string;
@@ -33,9 +35,14 @@ export function CtaSection({
   return (
     <section id={id} className="scroll-mt-24 py-10 lg:py-16" aria-labelledby={`${id}-title`}>
       <div className="shell">
-        <div className="tri-bg relative overflow-hidden rounded-[1.75rem] bg-mist px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
+        <div className="tri-bg panel relative overflow-hidden border-2 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
           <div className="grid items-center gap-10 lg:grid-cols-12">
             <div className="lg:col-span-7">
+              {label && (
+                <p className="section-label mb-3" data-reveal>
+                  {label}
+                </p>
+              )}
               <h2 id={`${id}-title`} data-reveal className="text-h1 max-w-xl text-ink">
                 {title}
               </h2>

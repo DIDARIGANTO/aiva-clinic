@@ -27,6 +27,11 @@
   --color-line: #e4e4e4;
   --color-brand-ink: #425829;     /* тёмно-зелёный текст на светло-салатовом */
   --color-tag: #e94e3c;           /* красная бирка «акция» */
+  --color-panel: #f6f6f6;         /* серые панели */
+  --color-panel-line: #e7e7e7;    /* рамка панелей */
+  --color-soft-btn: #e1f3c6;      /* светлая кнопка «Узнать цены» */
+  --color-footer: #585758;        /* тёмно-серый подвал */
+  --color-footer-text: #969696;
 
   --font-sans: var(--font-montserrat), "Montserrat", "Helvetica Neue", Arial, sans-serif;
   --font-serif: var(--font-montserrat), "Montserrat", "Helvetica Neue", Arial, sans-serif;
@@ -160,6 +165,35 @@
   font-weight: 600;
 }
 /* подпись-разделитель с линией, как «ТОЛЕ БИ, 221» в референсе */
+/* подпись секции («О нас», «Отзывы») */
+@utility section-label {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--color-ink);
+}
+/* заголовок секции главной: 48px, заглавные */
+@utility text-h2-main {
+  font-size: clamp(1.6rem, 1rem + 2.6vw, 3rem);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+/* панель и карточка референса */
+@utility panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-panel-line);
+  border-radius: 1.875rem;
+  box-shadow: 0 15px 60px rgb(219 206 206 / 0.1);
+}
+@utility card-green {
+  background: #fff;
+  border: 1px solid var(--color-forest);
+  border-radius: 1.875rem;
+  box-shadow: 0 2px 10px rgb(114 186 69 / 0.1);
+}
+
 @utility ruled-label {
   display: block;
   text-align: center;
