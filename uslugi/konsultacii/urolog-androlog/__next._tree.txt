@@ -1,0 +1,4 @@
+:HL["/aiva-clinic/_next/static/chunks/1j33g7moc-3sd.css","style"]
+:HL["/aiva-clinic/_next/static/media/44fac91e6f2d2b1b-s.p.1d_6dtvtn9g3_.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/aiva-clinic/_next/static/media/e8f2fbee2754df70-s.p.1dqa_6e_ad4sj.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"tree":{"name":"","param":null,"prefetchHints":4112,"slots":{"children":{"name":"uslugi","param":null,"prefetchHints":4160,"slots":{"children":{"name":"category","param":{"type":"d","key":"konsultacii","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"service","param":{"type":"d","key":"urolog-androlog","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}}}},"staleTime":300,"buildId":"rOuZfhaoW88Pp-m6EAmAO"}
