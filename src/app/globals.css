@@ -2,35 +2,41 @@
 
 /* ───────────── Фирменные токены AIVA CLINIC ───────────── */
 @theme {
-  /* основные */
-  --color-forest: #3c7857;
+  /*
+   * Палитра по референсу (dobrodent.kz): белый фон, серый текст, салатовый акцент.
+   * В качестве акцента используется светло-зелёный из фирменной палитры AIVA CLINIC (#72BA45),
+   * тёмно-зелёный (#3C7857) остаётся только в логотипе.
+   * Старые имена токенов сохранены, чтобы не переписывать все компоненты.
+   */
+  --color-forest: #72ba45;        /* акцент: кнопки, цены, подписи */
+  --color-forest-deep: #5f9f36;   /* hover */
+  --color-pine: #72ba45;          /* «тёмные» секции → салатовые, как подвал референса */
   --color-leaf: #72ba45;
-  --color-sun: #ffe666;
-  /* дополнительные */
-  --color-mint: #73bfb2;
-  --color-peach: #ffdcb8;
-  /* нейтральные */
-  --color-milk: #fafbf8;
-  --color-mist: #f2f5f0;
-  --color-ink: #202923;
-  --color-sage: #718077;
-  /* производные (для hover, тёмных секций, доступного вторичного текста, линий) */
-  --color-forest-deep: #2f6248;
-  --color-pine: #1d382a;
-  --color-moss: #56645b;
-  --color-line: #dfe6de;
-  --color-mint-soft: #e3f1ed;
-  --color-peach-soft: #fff1e2;
-  --color-sun-soft: #fff7c9;
+  --color-logo: #3c7857;          /* фирменный тёмно-зелёный — только логотип */
+  --color-sun: #ffffff;           /* акценты на салатовом фоне */
+  --color-sun-soft: #f6f6f6;
+  --color-mint: #ffffff;
+  --color-mint-soft: #eaf5df;     /* светло-салатовая подложка */
+  --color-peach: #eaf5df;
+  --color-peach-soft: #f6f6f6;
+  --color-milk: #ffffff;          /* фон страницы */
+  --color-mist: #f6f6f6;          /* серые панели и карточки */
+  --color-ink: #585758;           /* основной серый текст и заголовки */
+  --color-sage: #9b9b9b;
+  --color-moss: #777777;          /* вторичный текст */
+  --color-line: #e4e4e4;
+  --color-brand-ink: #425829;     /* тёмно-зелёный текст на светло-салатовом */
+  --color-tag: #e94e3c;           /* красная бирка «акция» */
 
-  --font-sans: var(--font-onest), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-serif: var(--font-serif-display), "Times New Roman", serif;
+  --font-sans: var(--font-montserrat), "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-montserrat), "Montserrat", "Helvetica Neue", Arial, sans-serif;
 
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-swift: cubic-bezier(0.4, 0, 0.2, 1);
 
-  --shadow-soft: 0 1px 2px rgb(32 41 35 / 0.04), 0 12px 32px -12px rgb(32 41 35 / 0.12);
-  --shadow-lift: 0 2px 4px rgb(32 41 35 / 0.04), 0 28px 60px -24px rgb(32 41 35 / 0.22);
+  --shadow-soft: 0 2px 6px rgb(0 0 0 / 0.04), 0 14px 34px -14px rgb(0 0 0 / 0.14);
+  --shadow-lift: 0 4px 10px rgb(0 0 0 / 0.05), 0 30px 60px -24px rgb(0 0 0 / 0.22);
+  --shadow-glow: 0 14px 30px -10px rgb(114 186 69 / 0.75);
 
   --breakpoint-xs: 26rem;
   --breakpoint-3xl: 100rem;
@@ -65,7 +71,6 @@
     background: var(--color-milk);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -106,89 +111,94 @@
 
 /* ───────────── Типографика ───────────── */
 @utility text-display {
-  font-size: clamp(2.6rem, 1.35rem + 5.6vw, 5.9rem);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
-  font-weight: 500;
+  font-size: clamp(1.75rem, 1.1rem + 2.4vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 @utility text-h1 {
-  font-size: clamp(2.3rem, 1.5rem + 3.6vw, 4.6rem);
-  line-height: 1.02;
-  letter-spacing: -0.035em;
-  font-weight: 500;
+  font-size: clamp(1.6rem, 1.1rem + 2vw, 2.3rem);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 @utility text-h2 {
-  font-size: clamp(1.95rem, 1.35rem + 2.6vw, 3.6rem);
+  font-size: clamp(1.5rem, 1.05rem + 1.9vw, 2.25rem);
+  line-height: 1.18;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+@utility text-h2-xl {
+  font-size: clamp(1.75rem, 1.1rem + 2.7vw, 3.5rem);
   line-height: 1.05;
-  letter-spacing: -0.033em;
-  font-weight: 500;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 @utility text-h3 {
-  font-size: clamp(1.35rem, 1.15rem + 0.9vw, 1.9rem);
-  line-height: 1.15;
-  letter-spacing: -0.022em;
-  font-weight: 500;
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.25rem);
+  line-height: 1.3;
+  font-weight: 600;
 }
 @utility text-lead {
-  font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.3rem);
-  line-height: 1.55;
-  letter-spacing: -0.008em;
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.3rem);
+  line-height: 1.45;
+  font-weight: 400;
 }
 @utility accent {
-  /* выразительное слово в заголовке: фирменный зелёный + антиква-курсив */
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  /* выделенная часть заголовка — салатовым */
   color: var(--color-forest);
 }
 @utility eyebrow {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 600;
 }
+/* подпись-разделитель с линией, как «ТОЛЕ БИ, 221» в референсе */
+@utility ruled-label {
+  display: block;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid currentColor;
+}
 
-/* ───────────── Раскладка ───────────── */
 @utility shell {
   width: 100%;
-  max-width: 88rem;
+  max-width: 76.25rem; /* 1200px + поля */
   margin-inline: auto;
-  padding-inline: clamp(1.15rem, 0.4rem + 3.4vw, 3.5rem);
+  padding-inline: 1.25rem;
 }
 @utility section-y {
-  padding-block: clamp(4.5rem, 3rem + 7vw, 9.5rem);
+  padding-block: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
 }
 
-/* ───────────── Фирменные формы: «лист» из эмблемы ───────────── */
+/* ───────────── Скругления (референс: 20–30px) ───────────── */
 @utility leaf {
-  border-radius: clamp(5rem, 16vw, 13rem) 1.75rem clamp(5rem, 16vw, 13rem) 1.75rem;
+  border-radius: 1.5rem;
 }
 @utility leaf-alt {
-  border-radius: 1.75rem clamp(5rem, 16vw, 13rem) 1.75rem clamp(5rem, 16vw, 13rem);
+  border-radius: 1.5rem;
 }
 @utility leaf-sm {
-  border-radius: 3.25rem 1rem 3.25rem 1rem;
+  border-radius: 1.25rem;
 }
 @utility leaf-sm-alt {
-  border-radius: 1rem 3.25rem 1rem 3.25rem;
+  border-radius: 1.25rem;
 }
 
 /* Зернистая подложка для тёмных секций */
 @utility grain {
   position: relative;
   isolation: isolate;
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.22;
-    mix-blend-mode: soft-light;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
 }
 
 /* Подчёркивание-ссылка */
@@ -200,6 +210,22 @@
   transition: background-size 0.45s var(--ease-soft);
   &:hover, &:focus-visible {
     background-size: 100% 1px;
+  }
+}
+
+/* Контурные треугольники на фоне (мотив референса) */
+@utility tri-bg {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='700' viewBox='0 0 900 700' fill='none' stroke='%2372BA45' stroke-opacity='0.16' stroke-width='3' stroke-linejoin='round'%3E%3Cpath d='M640 90 L740 170 L620 200 Z'/%3E%3Cpath d='M560 260 L820 330 L650 520 Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right -4rem top 2rem;
   }
 }
 
@@ -363,7 +389,7 @@ html.js [data-reveal].is-visible {
   to { transform: none; }
 }
 @keyframes hero-photo {
-  from { clip-path: inset(12% 12% 12% 12% round 16rem 2rem 16rem 2rem); opacity: 0.4; transform: scale(1.04); }
+  from { clip-path: inset(10% round 1.5rem); opacity: 0.4; transform: scale(1.04); }
   /* отрицательные отступы оставляют место для тени под фотографией */
   to { clip-path: inset(-14% -14% -14% -14% round 0); opacity: 1; transform: none; }
 }

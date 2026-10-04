@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Serif_Display, Onest } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { BookingProvider } from "@/components/booking/BookingProvider";
 import { FloatingActions } from "@/components/FloatingActions";
 import { Footer } from "@/components/Footer";
@@ -12,17 +12,10 @@ import { clinicSchema, websiteSchema } from "@/lib/schema";
 import { abs, noindex, site } from "@/lib/site";
 import "./globals.css";
 
-const onest = Onest({
+const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-onest",
-  display: "swap",
-});
-
-const serif = Noto_Serif_Display({
-  subsets: ["latin", "cyrillic"],
-  style: ["italic"],
-  weight: ["400", "500"],
-  variable: "--font-serif-display",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -67,7 +60,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FAFBF8",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -96,7 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   });
 
   return (
-    <html lang="ru" className={`${onest.variable} ${serif.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="ru" className={montserrat.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* Класс .js включает анимации появления только при работающем JavaScript */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />

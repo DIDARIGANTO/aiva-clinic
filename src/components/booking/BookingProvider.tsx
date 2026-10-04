@@ -62,21 +62,21 @@ export function BookingProvider({ groups, children }: { groups: ServiceGroup[]; 
         onClick={(e) => e.target === e.currentTarget && close()}
         className="booking-dialog m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 sm:m-auto sm:h-fit sm:max-h-[calc(100dvh-2rem)] sm:w-[min(46rem,calc(100vw-2rem))]"
       >
-        <div className="relative flex h-full flex-col overflow-hidden bg-milk sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:rounded-[2rem] sm:shadow-lift">
-          <div className="relative overflow-hidden bg-pine px-6 pb-7 pt-7 text-white grain sm:px-9">
-            <Emblem className="pointer-events-none absolute -right-10 -top-12 size-52 text-white/8" />
-            <p className="eyebrow text-sun">Запись на приём</p>
-            <h2 id="booking-title" className="mt-3 text-[1.7rem] font-medium leading-[1.08] tracking-[-0.03em] sm:text-[2.1rem]">
-              Оставьте заявку — <span className="accent text-white">подберём время</span>
+        <div className="relative flex h-full flex-col overflow-hidden bg-white sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:rounded-[1.5rem] sm:shadow-lift">
+          <div className="relative overflow-hidden bg-forest px-6 pb-7 pt-7 text-white sm:px-9">
+            <Emblem className="pointer-events-none absolute -right-10 -top-12 size-52 text-white/15" />
+            <p className="eyebrow text-white/85">Запись на приём</p>
+            <h2 id="booking-title" className="mt-3 text-[1.35rem] font-bold uppercase leading-[1.15] tracking-wide sm:text-[1.6rem]">
+              Оставьте заявку — подберём время
             </h2>
-            <p className="mt-2.5 max-w-md text-sm text-white/70">
+            <p className="mt-2.5 max-w-md text-sm text-white/90">
               {site.hours.label}, {site.hours.note}. Поможем выбрать специалиста и удобное время.
             </p>
             <button
               type="button"
               onClick={close}
               aria-label="Закрыть окно записи"
-              className="absolute right-4 top-4 grid size-10 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+              className="absolute right-4 top-4 grid size-10 place-items-center rounded-full bg-white/20 text-white transition-colors hover:bg-white/35"
             >
               <X className="size-5" aria-hidden="true" />
             </button>

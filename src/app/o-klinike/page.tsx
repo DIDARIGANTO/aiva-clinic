@@ -8,6 +8,9 @@ import { Emblem } from "@/components/Logo";
 import { CtaSection } from "@/components/ui/CtaSection";
 import { DoctorCard } from "@/components/ui/DoctorCard";
 import { PageHero } from "@/components/ui/PageHero";
+import { Reviews } from "@/components/ui/Reviews";
+import { HowItWorks } from "@/components/home/HowItWorks";
+import { FaqSection } from "@/components/home/FaqSection";
 import { Eyebrow, SectionHeading, delay } from "@/components/ui/Section";
 import { doctors } from "@/data/doctors";
 import { gallery } from "@/data/gallery";
@@ -259,14 +262,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <CtaSection
-        title={
-          <>
-            Запишитесь <span className="accent whitespace-nowrap text-sun">в AIVA CLINIC</span>
-          </>
-        }
-        lead="Сделайте первый шаг к заботе о своём здоровье — запишитесь на консультацию."
-      />
+      <Reviews />
+      <HowItWorks />
+      <FaqSection />
+      <CtaSection title="Запишитесь в AIVA CLINIC" lead="Сделайте первый шаг к заботе о своём здоровье — запишитесь на консультацию." />
     </>
   );
 }

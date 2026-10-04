@@ -13,7 +13,7 @@ const widgetSrc = `https://widgets.2gis.com/widget?type=firmsonmap&options=${enc
 )}`;
 
 /** Интерактивная карта 2ГИС. Виджет подгружается только когда блок приближается к области просмотра. */
-export function MapBlock() {
+export function MapBlock({ compact = false }: { compact?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(false);
 
@@ -34,8 +34,8 @@ export function MapBlock() {
   }, []);
 
   return (
-    <div ref={ref} className="relative isolate overflow-hidden rounded-[2rem] bg-mist shadow-soft">
-      <div className="relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/8]">
+    <div ref={ref} className="relative isolate overflow-hidden rounded-[1.5rem] bg-mist shadow-soft">
+      <div className={compact ? "relative aspect-[4/3] sm:aspect-[16/9]" : "relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/8]"}>
         {/* подложка до загрузки карты */}
         <div className="absolute inset-0 -z-10 grid place-items-center text-center">
           <div>
@@ -58,6 +58,7 @@ export function MapBlock() {
         )}
       </div>
 
+      {!compact && (
       <div className="flex flex-col gap-4 border-t border-line bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <p className="flex items-center gap-3 font-medium">
           <Navigation className="size-5 text-forest" aria-hidden="true" />
@@ -74,7 +75,7 @@ export function MapBlock() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-11 items-center rounded-full border border-forest/25 px-5 text-[0.93rem] font-medium text-forest transition-colors duration-300 hover:border-forest hover:bg-forest hover:text-white"
+                className="inline-flex h-11 items-center rounded-full border-2 border-forest px-5 text-[0.9rem] font-semibold text-forest transition-colors duration-300 hover:bg-forest hover:text-white"
               >
                 {label}
               </a>
@@ -82,6 +83,7 @@ export function MapBlock() {
           ))}
         </ul>
       </div>
+      )}
     </div>
   );
 }
